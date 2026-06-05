@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mintuu AI — Dashboard</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/theme.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/app.css">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Marked (for markdown rendering if needed) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body x-data="mintuu()" x-init="init()" class="bg-base text-primary font-sans h-screen overflow-hidden flex" :class="{ 'theme-light': theme === 'light' }">
+
+    <!-- ── Sidebar ────────────────────────────────────────────── -->
+    <aside class="sidebar" :class="{ 'collapsed': sidebarCollapsed }" aria-label="Sidebar Navigation">
+        <div class="sidebar-logo-container">
+            <!-- New SVG Logo -->
+            <svg viewBox="0 0 200 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="height: 40px; width: auto; max-width: 100%;">
+                <defs>
+                    <linearGradient id="purpleCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#7C3AED" />
+                        <stop offset="100%" stop-color="#06B6D4" />
+                    </linearGradient>
+                    <linearGradient id="textGradM" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#7C3AED" />
+                        <stop offset="100%" stop-color="#F8FAFC" />
+                    </linearGradient>
+                    <linearGradient id="textGradU" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#F8FAFC" />
+                        <stop offset="100%" stop-color="#06B6D4" />
+                    </linearGradient>
+                </defs>
+                <g class="logo-mark">
+                    <path d="M32 4L56.2487 18V46L32 60L7.75126 46V18L32 4Z" stroke="#7C3AED" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M18 32 C 24 20, 40 20, 46 32" stroke="url(#purpleCyan)" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M18 32 C 24 44, 40 44, 46 32" stroke="url(#purpleCyan)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="32" cy="32" r="3" fill="#06B6D4" />
+                </g>
+                <g class="logo-text" transform="translate(70, 38)" x-show="!sidebarCollapsed">
+                    <text font-family="'Inter', sans-serif" font-weight="700" font-size="28" fill="#F8FAFC">
+                        <tspan fill="url(#textGradM)">M</tspan>intu<tspan fill="url(#textGradU)">u</tspan>
+                    </text>
+                    <text y="16" font-family="'Inter', sans-serif" font-weight="400" font-size="10" fill="#06B6D4" letter-spacing="0.3em">AI</text>
+                </g>
+            </svg>
+        </div>
+
+        <nav class="sidebar-nav">
+            <button @click="navigateTo('chat')" class="sidebar-item" :class="{ 'active': currentPage === 'chat' }" id="nav-chat">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <span x-show="!sidebarCollapsed">Chat</span>
+            </button>
+            <button @click="navigateTo('agents')" class="sidebar-item" :class="{ 'active': currentPage === 'agents' }" id="nav-agents">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span x-show="!sidebarCollapsed">Agents</span>
+            </button>
+            <button @click="navigateTo('workflows')" class="sidebar-item" :class="{ 'active': currentPage === 'workflows' }" id="nav-workflows">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <span x-show="!sidebarCollapsed">Workflows</span>
+            </button>
+            <button @click="navigateTo('history')" class="sidebar-item" :class="{ 'active': currentPage === 'history' }" id="nav-history">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span x-show="!sidebarCollapsed">History</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-status-card">
+                <div class="status-card-header">
+                    <span class="status-dot" :class="systemStatusColor"></span>
+                    <span class="status-card-text" x-show="!sidebarCollapsed" x-text="systemStatusLabel"></span>
+                </div>
+                <div class="uptime-text" x-show="!sidebarCollapsed">Up: <span x-text="uptimeText"></span></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ── Main App Area ──────────────────────────────────────── -->
+    <main class="app-main flex-1" :class="{ 'sidebar-collapsed': sidebarCollapsed, 'chat-page-bg': currentPage === 'chat' }">
+        
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button @click="sidebarCollapsed = !sidebarCollapsed" class="p-1 rounded hover:bg-white/5 text-muted transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <div class="breadcrumb">Mintuu AI <span class="mx-1">/</span> <span class="breadcrumb-highlight" x-text="pageTitle()"></span></div>
+            </div>
+            
+            <div class="topbar-center">
+                <span class="status-dot" :class="systemStatusColor"></span>
+                <span class="live-status-text" x-text="systemStatusText"></span>
+            </div>
+
+            <div class="topbar-right">
+                <button class="notification-btn" aria-label="Notifications">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    <span class="badge-count" x-show="notificationCount > 0" x-text="notificationCount"></span>
+                </button>
+                <div class="user-menu" @click.outside="showUserDropdown = false">
+                    <button class="avatar-btn" @click="showUserDropdown = !showUserDropdown" x-text="userInitials" aria-label="User menu"></button>
+                    <div class="dropdown-menu" x-show="showUserDropdown" x-transition style="display: none;">
+                        <div class="px-3 py-2 border-b border-white/5 mb-1">
+                            <div class="text-sm font-medium text-white" x-text="userName"></div>
+                            <div class="text-xs text-muted truncate" x-text="userEmail"></div>
+                        </div>
+                        <button class="dropdown-item" @click="navigateTo('settings'); showUserDropdown = false">Account Settings</button>
+                        <button class="dropdown-item" @click="restartTour(); showUserDropdown = false">Restart Tour</button>
+                        <button class="dropdown-item" @click="toggleTheme(); showUserDropdown = false">Toggle Theme</button>
+                        <div class="border-t border-white/5 my-1"></div>
+                        <button class="dropdown-item danger" @click="logout()">Log Out</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Pages Container with Transition -->
+        <div class="relative flex-1 overflow-hidden">
+            <div class="absolute inset-0 flex flex-col" :class="{ 'page-fade-leave-active': pageTransition, 'page-fade-enter-active': !pageTransition, 'page-fade-enter': pageTransition }">
+                
+                <!-- ── Chat Page ────────────────────────────────── -->
+                <div x-show="currentPage === 'chat'" class="chat-container">
+                    <div class="chat-messages" x-ref="chatMessages">
+                        <template x-if="chatMessages.length === 0">
+                            <div class="h-full flex flex-col items-center justify-center text-center max-w-lg mx-auto p-6" x-show="dataLoaded">
+                                <!-- Big Logo SVG for empty state -->
+                                <svg viewBox="0 0 64 64" fill="none" class="w-16 h-16 mb-6 opacity-50">
+                                    <path d="M32 4L56.2487 18V46L32 60L7.75126 46V18L32 4Z" stroke="#7C3AED" stroke-width="2" stroke-linejoin="round"/>
+                                    <circle cx="32" cy="32" r="4" fill="#06B6D4" />
+                                </svg>
+                                <h1 class="text-3xl font-bold mb-2">How can Mintuu help today?</h1>
+                                <p class="text-muted mb-8 text-sm">Assign a goal, describe a problem, or ask for a report. The agent network will organize and execute automatically.</p>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                                    <button @click="prefillChat('Launch a new product by Q3 with a $50k budget')" class="action-chip justify-center">Launch new product</button>
+                                    <button @click="prefillChat('Run a comprehensive competitor analysis on Anthropic')" class="action-chip justify-center">Analyze competitors</button>
+                                    <button @click="prefillChat('Audit our infrastructure security policies')" class="action-chip justify-center">Security audit</button>
+                                    <button @click="prefillChat('Draft a Q1 financial summary for the board')" class="action-chip justify-center">Financial summary</button>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template x-for="(msg, i) in chatMessages" :key="i">
+                            <div class="chat-msg" :class="msg.type">
+                                <div class="msg-avatar" x-html="msg.type === 'user' ? userInitials : '<svg fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M13 10V3L4 14h7v7l9-11h-7z\'></path></svg>'"></div>
+                                <div class="chat-bubble">
+                                    <template x-if="msg.type === 'system'"><span class="agent-name">Mintuu AI</span></template>
+                                    <div class="prose prose-invert max-w-none text-sm" x-html="msg.type === 'user' ? msg.text : marked.parse(msg.text)"></div>
+                                    
+                                    <!-- Example Workflow Pill Injection (Simulated via text content check for demo) -->
+                                    <template x-if="msg.type === 'system' && msg.text.includes('Workflow Details:')">
+                                        <div class="inline-workflow-steps">
+                                            <div class="step-pill completed"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Define Strategy</div>
+                                            <div class="step-pill active"><span class="w-2 h-2 rounded-full bg-cyan-400 mr-1 animate-pulse"></span> Gather Data</div>
+                                            <div class="step-pill pending"><span class="w-2 h-2 rounded-full border border-current mr-1"></span> Generate Report</div>
+                                            <div class="collab-pill"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg> 3 agent collaborations</div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    
+                    <div class="chat-input-wrapper" id="chat-input-bar">
+                        <div class="quick-actions-bar" x-show="chatMessages.length === 0">
+                            <button @click="prefillChat('Run a system health check across all agents')" class="action-chip"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Health Check</button>
+                            <button @click="prefillChat('Summarize latest competitor moves')" class="action-chip"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Competitor Watch</button>
+                            <button @click="prefillChat('Review monthly burn rate and budget')" class="action-chip"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Budget Review</button>
+                        </div>
+                        <form @submit.prevent="sendChat" class="chat-input-container">
+                            <div class="placeholder-text" x-show="!chatInput" x-text="placeholderText"></div>
+                            <input type="text" id="chat-input" x-model="chatInput" class="chat-input-pill" autocomplete="off">
+                            <button type="submit" class="chat-send-btn" aria-label="Send message" :disabled="!chatInput.trim()">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ── Agents Page ──────────────────────────────── -->
+                <div x-show="currentPage === 'agents'" class="page overflow-y-auto">
+                    <div class="page-header">
+                        <h2>Agent Network</h2>
+                        <div class="text-sm text-muted bg-white/5 px-3 py-1 rounded-full border border-white/10" x-text="agents.length + ' agents active'"></div>
+                    </div>
+
+                    <template x-if="!dataLoaded"><div class="agents-grid"><template x-for="i in 6"><div class="agent-card-wrapper h-48 skeleton"></div></template></div></template>
+                    
+                    <div class="agents-grid" x-show="dataLoaded">
+                        <template x-for="agent in agents" :key="agent.name">
+                            <div class="agent-card-wrapper" :class="{ 'active': agent.state === 'busy' || agent.state === 'thinking' }" :style="`--agent-color: ${getAgentMeta(agent.department).color}; --agent-glow: ${getAgentMeta(agent.department).color}40;`">
+                                <div class="agent-card-bg"></div>
+                                <div class="live-badge" x-show="agent.state === 'busy' || agent.state === 'thinking'">Live</div>
+                                <div class="agent-card-content">
+                                    <div class="flex justify-between items-start">
+                                        <div class="agent-icon" x-text="getAgentMeta(agent.department).icon"></div>
+                                        <div class="agent-status-badge" :class="agent.state === 'busy' ? 'executing' : (agent.state === 'thinking' ? 'thinking' : 'idle')">
+                                            <span x-show="agent.state === 'busy'" class="spin-icon">⟳</span>
+                                            <span x-text="agent.state === 'busy' ? 'Executing' : (agent.state === 'thinking' ? 'Thinking' : 'Idle')"></span>
+                                        </div>
+                                    </div>
+                                    <div class="agent-name-role">
+                                        <h3 x-text="agent.name"></h3>
+                                        <p x-text="agent.department"></p>
+                                    </div>
+                                    <div class="mt-auto">
+                                        <div class="agent-stats">
+                                            <div class="stat-item"><span class="stat-value" x-text="agent.tasks_completed"></span><span class="stat-label">Tasks</span></div>
+                                            <div class="stat-item items-end"><span class="stat-value">1.2s</span><span class="stat-label">Avg Resp</span></div>
+                                        </div>
+                                        <div class="agent-progress-bar">
+                                            <div class="agent-progress-fill" :style="`width: ${Math.min(100, (agent.tasks_completed / 10) * 100)}%`"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <h3 class="text-lg font-bold mt-12 mb-6">Collaboration Stream</h3>
+                    <div class="bg-surface border border-white/10 rounded-lg p-1 space-y-1">
+                        <template x-if="collabMessages.length === 0">
+                            <div class="p-8 text-center text-muted">No recent collaborations.</div>
+                        </template>
+                        <template x-for="msg in collabMessages" :key="msg.timestamp">
+                            <div class="flex items-center gap-4 p-3 hover:bg-white/5 rounded transition text-sm">
+                                <span class="text-muted font-mono text-xs w-16" x-text="formatTime(msg.timestamp)"></span>
+                                <div class="flex-1 font-mono text-xs">
+                                    <span class="text-cyan-400 font-bold" x-text="msg.from_agent"></span>
+                                    <span class="text-muted mx-2">→</span>
+                                    <span class="text-purple-400 font-bold" x-text="msg.to_agent"></span>
+                                    <span class="text-muted ml-3" x-text="msg.message_type"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- ── Workflows Page ───────────────────────────── -->
+                <div x-show="currentPage === 'workflows'" class="page overflow-y-auto">
+                    <div class="page-header">
+                        <h2>Active Workflows</h2>
+                        <button class="btn primary btn-sm" @click="fetchState()">Refresh</button>
+                    </div>
+                    
+                    <template x-if="!dataLoaded"><div class="h-64 skeleton mb-6"></div></template>
+
+                    <template x-if="workflows.length === 0 && dataLoaded">
+                        <div class="empty-state">
+                            <svg class="w-12 h-12 mx-auto mb-4 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            <h3 class="text-lg font-bold mb-2">No active workflows</h3>
+                            <p>Ask Mintuu a question in Chat to start a new workflow.</p>
+                        </div>
+                    </template>
+
+                    <div class="space-y-6">
+                        <template x-for="wf in workflows" :key="wf.id">
+                            <div class="workflow-graph-container">
+                                <div class="workflow-header">
+                                    <div class="font-mono text-xs text-muted mb-1" x-text="wf.id"></div>
+                                    <div class="workflow-title" x-text="wf.name"></div>
+                                    <div class="workflow-status-badge" :class="wf.status === 'completed' ? 'bg-purple-900/50 text-purple-400' : 'bg-cyan-900/50 text-cyan-400'" x-text="wf.status"></div>
+                                </div>
+                                
+                                <div class="node-graph">
+                                    <template x-for="(step, idx) in wf.steps" :key="step.id">
+                                        <div class="flex items-center">
+                                            <div class="graph-node">
+                                                <div class="node-box" :class="{ 'completed': step.status === 'completed', 'active': step.status === 'in_progress', 'failed': step.status === 'failed' }">
+                                                    <div class="node-step-circle" x-text="idx + 1"></div>
+                                                    <div class="node-agent" x-text="step.assigned_agent"></div>
+                                                    <div class="text-[9px] text-muted uppercase tracking-wider" x-text="step.status"></div>
+                                                </div>
+                                            </div>
+                                            <div class="graph-edge" x-show="idx < wf.steps.length - 1" :class="{ 'completed': step.status === 'completed', 'active': step.status === 'in_progress' }">
+                                                <div class="graph-edge-fill"></div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                
+                                <div class="execution-timeline">
+                                    <template x-for="step in wf.steps">
+                                        <div class="timeline-segment" :style="`width: ${100/wf.steps.length}%; background: ${step.status === 'completed' ? 'var(--color-purple)' : (step.status === 'in_progress' ? 'var(--color-cyan)' : 'transparent')}`"></div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <h3 class="text-lg font-bold mt-12 mb-6">Autonomous Background Tasks</h3>
+                    <div class="bg-surface border border-white/10 rounded-lg p-1">
+                        <template x-for="task in autoTasks" :key="task.name">
+                            <div class="flex items-center justify-between p-4 hover:bg-white/5 border-b border-white/5 last:border-0">
+                                <div>
+                                    <div class="font-medium flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full" :class="task.active ? 'bg-cyan-400' : 'bg-muted'"></span>
+                                        <span x-text="task.name"></span>
+                                    </div>
+                                    <div class="text-xs text-muted mt-1" x-text="task.agent + ' • Every ' + task.schedule_seconds + 's'"></div>
+                                </div>
+                                <div class="font-mono text-xs text-muted" x-text="task.runs + ' runs'"></div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- ── History Page ───────────────────────────── -->
+                <div x-show="currentPage === 'history'" class="page overflow-y-auto">
+                    <div class="page-header"><h2>History</h2></div>
+                    <div class="mb-6">
+                        <input type="text" x-model="historySearch" placeholder="Search past workflows..." class="input w-full max-w-md">
+                    </div>
+                    <div class="bg-surface rounded-lg border border-white/10 overflow-hidden">
+                        <template x-if="filteredHistory.length === 0"><div class="p-8 text-center text-muted">No history found.</div></template>
+                        <template x-for="h in filteredHistory" :key="h.id">
+                            <div class="flex items-center justify-between p-4 border-b border-white/5 hover:bg-white/5 cursor-pointer transition">
+                                <div>
+                                    <div class="font-medium" x-text="h.name"></div>
+                                    <div class="text-xs text-muted mt-1 font-mono" x-text="h.id + ' • ' + formatDate(h.created_at)"></div>
+                                </div>
+                                <div class="text-sm font-medium text-purple-400">Completed</div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- ── Settings Page ──────────────────────────── -->
+                <div x-show="currentPage === 'settings'" class="page overflow-y-auto">
+                    <div class="page-header"><h2>Settings</h2></div>
+                    <div class="max-w-2xl space-y-8">
+                        <div class="card p-6">
+                            <h3 class="text-lg font-bold mb-4">Account</h3>
+                            <div class="space-y-4">
+                                <div><label class="block text-sm text-muted mb-1">Name</label><input type="text" class="input w-full" :value="userName" readonly></div>
+                                <div><label class="block text-sm text-muted mb-1">Email</label><input type="text" class="input w-full" :value="userEmail" readonly></div>
+                            </div>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-lg font-bold mb-4">Appearance</h3>
+                            <button class="btn secondary w-full justify-between" @click="toggleTheme()">
+                                <span>Theme Preference</span>
+                                <span class="capitalize text-muted" x-text="theme"></span>
+                            </button>
+                        </div>
+                        <div class="card p-6 border-red-900/50">
+                            <h3 class="text-lg font-bold mb-4 text-red-400">Data Management</h3>
+                            <div class="flex gap-4">
+                                <button class="btn secondary" @click="exportData()">Export Data</button>
+                                <button class="btn secondary text-red-400 hover:bg-red-900/20 hover:border-red-500/50" @click="clearData()">Clear All Data</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── Mobile Bottom Nav ──────────────────────────────── -->
+        <nav class="mobile-nav hidden">
+            <button class="mobile-nav-item" :class="{ 'active': currentPage === 'chat' }" @click="navigateTo('chat')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <span>Chat</span>
+            </button>
+            <button class="mobile-nav-item" :class="{ 'active': currentPage === 'agents' }" @click="navigateTo('agents')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span>Agents</span>
+            </button>
+            <button class="mobile-nav-item" :class="{ 'active': currentPage === 'workflows' }" @click="navigateTo('workflows')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <span>Flows</span>
+            </button>
+            <button class="mobile-nav-item" :class="{ 'active': currentPage === 'settings' }" @click="navigateTo('settings')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span>Settings</span>
+            </button>
+        </nav>
+    </main>
+
+    <!-- ── Welcome Overlay ────────────────────────────────────── -->
+    <div x-show="showWelcome" class="fixed inset-0 z-[1000] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-500" style="display: none;">
+        <div class="bg-surface border border-white/10 rounded-2xl p-8 max-w-lg w-full text-center relative overflow-hidden shadow-2xl">
+            <div class="absolute inset-0 bg-gradient-to-b from-purple-500/10 to-transparent pointer-events-none"></div>
+            <svg class="w-16 h-16 mx-auto mb-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            <h2 class="text-3xl font-bold mb-4">Welcome to Mintuu</h2>
+            <p class="text-muted mb-8">Your autonomous AI agent ecosystem is ready.</p>
+            <div class="space-y-4">
+                <button @click="startTour()" class="btn primary w-full text-lg py-3">Take the Guided Tour</button>
+                <button @click="skipWelcome()" class="btn text w-full text-muted hover:text-white">Skip</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Guided Tour Spotlight & Tooltip ────────────────────── -->
+    <div x-show="showTour" class="fixed inset-0 z-[900] pointer-events-none" style="display: none;">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300"></div>
+        <div class="absolute rounded-lg border-2 border-purple-400 shadow-[0_0_0_9999px_rgba(0,0,0,0.7),0_0_30px_rgba(124,58,237,0.5)] transition-all duration-500 ease-in-out pointer-events-none" :style="spotlightStyle"></div>
+        
+        <div class="absolute bg-surface border border-white/10 p-6 rounded-xl shadow-2xl max-w-sm transition-all duration-500 pointer-events-auto" :style="tooltipStyle">
+            <div class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2" x-text="`Step ${tourStep + 1} of ${tourSteps.length}`"></div>
+            <h3 class="text-xl font-bold mb-2" x-text="tourSteps[tourStep]?.title"></h3>
+            <p class="text-muted text-sm mb-6" x-text="tourSteps[tourStep]?.description"></p>
+            <div class="flex justify-between items-center">
+                <button @click="endTour()" class="text-xs text-muted hover:text-white transition">Skip Tour</button>
+                <div class="flex gap-2">
+                    <button x-show="tourStep > 0" @click="tourStep--; positionTour()" class="btn secondary btn-sm">Back</button>
+                    <button x-show="tourStep < tourSteps.length - 1" @click="tourStep++; positionTour()" class="btn primary btn-sm">Next</button>
+                    <button x-show="tourStep === tourSteps.length - 1" @click="endTour()" class="btn primary btn-sm">Get Started</button>
+                </div>
+            </div>
+            <div class="flex gap-1 justify-center mt-4">
+                <template x-for="(_, i) in tourSteps" :key="i">
+                    <div class="w-2 h-2 rounded-full" :class="i === tourStep ? 'bg-purple-500' : 'bg-white/20'"></div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

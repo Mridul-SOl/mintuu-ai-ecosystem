@@ -1,0 +1,46 @@
+[project]
+name = "mintuu-ai-ecosystem"
+version = "1.0.0"
+description = "AI-Powered Business Operating System — Multi-Agent Orchestration Platform"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Mintuu AI"}]
+
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic>=2.0.0",
+    "jinja2>=3.1.0",
+    "python-multipart>=0.0.6",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "httpx>=0.25.0",
+    "aiohttp>=3.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "httpx>=0.25.0",
+    "ruff>=0.2.0",
+]
+production = [
+    "gunicorn>=21.2.0",
+    "psycopg2-binary>=2.9.0",
+    "redis>=5.0.0",
+]
+
+[project.scripts]
+mintuu = "mintuu_ai_ecosystem.cli.main:main"
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["mintuu_ai_ecosystem*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"

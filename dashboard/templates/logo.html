@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mintuu Logo</title>
+    <style>
+        body { background: #0A0A0F; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .logo-container { width: 500px; height: 200px; display: flex; justify-content: center; align-items: center; }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <svg viewBox="0 0 200 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="height: 200px; width: auto;">
+            <defs>
+                <linearGradient id="purpleCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#7C3AED" />
+                    <stop offset="100%" stop-color="#06B6D4" />
+                </linearGradient>
+                <linearGradient id="textGradM" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#7C3AED" />
+                    <stop offset="100%" stop-color="#F8FAFC" />
+                </linearGradient>
+                <linearGradient id="textGradU" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#F8FAFC" />
+                    <stop offset="100%" stop-color="#06B6D4" />
+                </linearGradient>
+            </defs>
+            <g class="logo-mark">
+                <path d="M32 4L56.2487 18V46L32 60L7.75126 46V18L32 4Z" stroke="#7C3AED" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M18 32 C 24 20, 40 20, 46 32" stroke="url(#purpleCyan)" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M18 32 C 24 44, 40 44, 46 32" stroke="url(#purpleCyan)" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="32" cy="32" r="3" fill="#06B6D4" />
+            </g>
+            <g class="logo-text" transform="translate(70, 38)">
+                <text font-family="'Inter', sans-serif" font-weight="700" font-size="28" fill="#F8FAFC">
+                    <tspan fill="url(#textGradM)">M</tspan>intu<tspan fill="url(#textGradU)">u</tspan>
+                </text>
+                <text y="16" font-family="'Inter', sans-serif" font-weight="400" font-size="10" fill="#06B6D4" letter-spacing="0.3em">AI</text>
+            </g>
+        </svg>
+    </div>
+</body>
+</html>

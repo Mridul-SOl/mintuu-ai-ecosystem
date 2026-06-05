@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mintuu AI — Log In</title>
+    <link rel="stylesheet" href="/static/css/theme.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/landing.css">
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <a href="/" class="auth-back">← Back to home</a>
+            <div class="auth-card">
+                <div class="auth-logo">
+                    <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="21" stroke="url(#ag2)" stroke-width="2"/><circle cx="24" cy="24" r="7" fill="url(#ag2)"/><defs><linearGradient id="ag2" x1="0" y1="0" x2="48" y2="48"><stop stop-color="#7C3AED"/><stop offset="1" stop-color="#06B6D4"/></linearGradient></defs></svg>
+                    <h2>Welcome Back</h2>
+                    <p>Log in to your Mintuu AI workspace</p>
+                </div>
+                <div class="auth-error" id="login-error"></div>
+                <form class="auth-form" id="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" class="form-input" id="email" name="email" placeholder="you@company.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" class="form-input" id="password" name="password" placeholder="Your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg" id="login-btn" style="width:100%">Log In</button>
+                </form>
+                <div class="auth-footer"><p>Don't have an account? <a href="/signup">Sign up</a></p></div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/auth.js"></script>
+    <script>
+        async function handleLogin(e) {
+            e.preventDefault();
+            const err = document.getElementById('login-error');
+            const btn = document.getElementById('login-btn');
+            err.classList.remove('visible'); err.textContent = '';
+            const email = document.getElementById('email').value.trim();
+            const pw = document.getElementById('password').value;
+            btn.disabled = true; btn.textContent = 'Logging in...';
+            try {
+                const res = await fetch('/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pw }) });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Login failed');
+                setTokens(data.access_token, data.refresh_token);
+                setUser(data.user);
+                window.location.href = '/app';
+            } catch (ex) { err.textContent = ex.message; err.classList.add('visible'); btn.disabled = false; btn.textContent = 'Log In'; }
+        }
+    </script>
+</body>
+</html>

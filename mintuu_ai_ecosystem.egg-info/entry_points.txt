@@ -1,0 +1,2 @@
+[console_scripts]
+mintuu = mintuu_ai_ecosystem.cli.main:main

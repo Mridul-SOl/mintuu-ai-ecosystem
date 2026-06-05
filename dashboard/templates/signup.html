@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mintuu AI — Sign Up</title>
+    <link rel="stylesheet" href="/static/css/theme.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/landing.css">
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <a href="/" class="auth-back">← Back to home</a>
+            <div class="auth-card">
+                <div class="auth-logo">
+                    <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="21" stroke="url(#ag)" stroke-width="2"/><circle cx="24" cy="24" r="7" fill="url(#ag)"/><defs><linearGradient id="ag" x1="0" y1="0" x2="48" y2="48"><stop stop-color="#7C3AED"/><stop offset="1" stop-color="#06B6D4"/></linearGradient></defs></svg>
+                    <h2>Create Account</h2>
+                    <p>Join Mintuu AI and start automating your business</p>
+                </div>
+                <div class="auth-error" id="signup-error"></div>
+                <form class="auth-form" id="signup-form" onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Full Name</label>
+                        <input type="text" class="form-input" id="name" name="name" placeholder="Your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" class="form-input" id="email" name="email" placeholder="you@company.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" class="form-input" id="password" name="password" placeholder="Min 6 characters" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password2">Confirm Password</label>
+                        <input type="password" class="form-input" id="password2" name="password2" placeholder="Repeat password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg" id="signup-btn" style="width:100%">Create Account</button>
+                </form>
+                <div class="auth-footer"><p>Already have an account? <a href="/login">Log in</a></p></div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/auth.js"></script>
+    <script>
+        async function handleSignup(e) {
+            e.preventDefault();
+            const err = document.getElementById('signup-error');
+            const btn = document.getElementById('signup-btn');
+            err.classList.remove('visible'); err.textContent = '';
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const pw = document.getElementById('password').value;
+            const pw2 = document.getElementById('password2').value;
+            if (pw !== pw2) { err.textContent = 'Passwords do not match.'; err.classList.add('visible'); return; }
+            if (pw.length < 6) { err.textContent = 'Password must be at least 6 characters.'; err.classList.add('visible'); return; }
+            btn.disabled = true; btn.textContent = 'Creating...';
+            try {
+                const res = await fetch('/auth/signup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pw, full_name: name }) });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Signup failed');
+                setTokens(data.access_token, data.refresh_token);
+                setUser(data.user);
+                window.location.href = '/app';
+            } catch (ex) { err.textContent = ex.message; err.classList.add('visible'); btn.disabled = false; btn.textContent = 'Create Account'; }
+        }
+    </script>
+</body>
+</html>

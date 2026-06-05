@@ -1,0 +1,103 @@
+INFO:     Started server process [85299]
+INFO:     Waiting for application startup.
+2026-05-09 12:11:21 [INFO] mintuu.api: Starting Mintuu AI Ecosystem v2...
+2026-05-09 12:11:21 [INFO] mintuu.orchestrator: ============================================================
+2026-05-09 12:11:21 [INFO] mintuu.orchestrator:   MINTUU AI ECOSYSTEM v2 — INITIALIZING
+2026-05-09 12:11:21 [INFO] mintuu.orchestrator: ============================================================
+2026-05-09 12:11:21 [INFO] mintuu.database: Database initialized at: /Users/mridulsoliwal/Documents/All_Projects/AI_Agents/mintuu_ai_ecosystem/mintuu_ecosystem.db
+2026-05-09 12:11:21 [INFO] mintuu.memory: Memory Manager initialized
+2026-05-09 12:11:21 [INFO] mintuu.state: State Manager initialized
+2026-05-09 12:11:21 [INFO] mintuu.communication: Message Bus initialized
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool registered: file_read [FILE]
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool registered: file_write [FILE]
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool registered: terminal_execute [TERMINAL]
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool registered: data_analysis [ANALYTICS]
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool registered: report_generator [UTILITY]
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool Registry initialized with 5 tools
+2026-05-09 12:11:21 [INFO] mintuu.orchestration.registry: Agent Registry initialized
+2026-05-09 12:11:21 [INFO] mintuu.collaboration: Collaboration Engine initialized
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool registered: git_status [GITHUB]
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool registered: system_info [UTILITY]
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool registered: document_generator [FILE]
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool registered: calendar_manager [CALENDAR]
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool registered: email_send [EMAIL]
+2026-05-09 12:11:21 [INFO] mintuu.tools: Tool registered: metrics_collector [ANALYTICS]
+2026-05-09 12:11:21 [INFO] mintuu.execution: Execution Manager initialized with 11 total tools
+2026-05-09 12:11:21 [INFO] mintuu.llm.manager: LLM Manager initialized.
+2026-05-09 12:11:21 [INFO] mintuu.state: Agent registered: agent-ceo (CEO)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent initialized: CEO Agent (agent-ceo)
+2026-05-09 12:11:21 [INFO] mintuu.state: Agent registered: agent-hr (HR)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent initialized: HR Agent (agent-hr)
+2026-05-09 12:11:21 [INFO] mintuu.state: Agent registered: agent-marketing (Marketing)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent initialized: Marketing Agent (agent-marketing)
+2026-05-09 12:11:21 [INFO] mintuu.state: Agent registered: agent-finance (Finance)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent initialized: Finance Agent (agent-finance)
+2026-05-09 12:11:21 [INFO] mintuu.state: Agent registered: agent-production (Production)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent initialized: Production Agent (agent-production)
+2026-05-09 12:11:21 [INFO] mintuu.state: Agent registered: agent-operations (Operations)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent initialized: Operations Agent (agent-operations)
+2026-05-09 12:11:21 [INFO] mintuu.state: Agent registered: agent-research (Research)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent initialized: Research Agent (agent-research)
+2026-05-09 12:11:21 [INFO] mintuu.state: Agent registered: agent-security (Security)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent initialized: Security Agent (agent-security)
+2026-05-09 12:11:21 [INFO] mintuu.state: Agent registered: agent-infrastructure (Infrastructure)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent initialized: Infrastructure Agent (agent-infrastructure)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent activated: CEO Agent
+2026-05-09 12:11:21 [INFO] mintuu.orchestration.registry: Registered: CEO Agent (agent-ceo)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent activated: HR Agent
+2026-05-09 12:11:21 [INFO] mintuu.orchestration.registry: Registered: HR Agent (agent-hr)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent activated: Marketing Agent
+2026-05-09 12:11:21 [INFO] mintuu.orchestration.registry: Registered: Marketing Agent (agent-marketing)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent activated: Finance Agent
+2026-05-09 12:11:21 [INFO] mintuu.orchestration.registry: Registered: Finance Agent (agent-finance)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent activated: Production Agent
+2026-05-09 12:11:21 [INFO] mintuu.orchestration.registry: Registered: Production Agent (agent-production)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent activated: Operations Agent
+2026-05-09 12:11:21 [INFO] mintuu.orchestration.registry: Registered: Operations Agent (agent-operations)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent activated: Research Agent
+2026-05-09 12:11:21 [INFO] mintuu.orchestration.registry: Registered: Research Agent (agent-research)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent activated: Security Agent
+2026-05-09 12:11:21 [INFO] mintuu.orchestration.registry: Registered: Security Agent (agent-security)
+2026-05-09 12:11:21 [INFO] mintuu.agent: Agent activated: Infrastructure Agent
+2026-05-09 12:11:21 [INFO] mintuu.orchestration.registry: Registered: Infrastructure Agent (agent-infrastructure)
+2026-05-09 12:11:21 [INFO] mintuu.workflow: Workflow Engine initialized
+2026-05-09 12:11:21 [INFO] mintuu.autonomous: Autonomous Engine initialized
+2026-05-09 12:11:21 [INFO] mintuu.orchestrator: ============================================================
+2026-05-09 12:11:21 [INFO] mintuu.orchestrator:   ECOSYSTEM v2 ONLINE — 9 agents active
+2026-05-09 12:11:21 [INFO] mintuu.orchestrator:   Tools: 11 | Autonomous tasks: 5
+2026-05-09 12:11:21 [INFO] mintuu.orchestrator: ============================================================
+2026-05-09 12:11:21 [INFO] mintuu.autonomous: Autonomous engine STARTED
+2026-05-09 12:11:21 [INFO] mintuu.orchestrator: Autonomous operations STARTED
+2026-05-09 12:11:21 [INFO] mintuu.api: Ecosystem v2 fully operational. Autonomous engine running.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8003 (Press CTRL+C to quit)
+2026-05-09 12:11:26 [INFO] mintuu.database: Created workflow: d443d210-58c7-4817-8b92-40b6805e8076 (GitHub Incident: High memory usage in analytics engine - Run 5)
+2026-05-09 12:11:26 [INFO] mintuu.workflow: Workflow created: GitHub Incident: High memory usage in analytics engine - Run 5 (d443d210-58c7-4817-8b92-40b6805e8076) with 5 steps
+2026-05-09 12:11:26 [INFO] mintuu.communication: Broadcast from orchestrator: BROADCAST
+2026-05-09 12:11:26 [INFO] mintuu.collaboration: Broadcast from orchestrator: Workflow started: GitHub Incident: High memory usage in anal
+2026-05-09 12:11:26 [INFO] mintuu.agent: Research Agent planning task: Analyze Issue against Memory
+2026-05-09 12:11:26 [INFO] mintuu.agent: Using LLM Reasoning Engine for Research...
+2026-05-09 12:11:26 [INFO] mintuu.llm.reasoning: [agent-research] Starting reasoning chain for task: Query vector memory to find similar past issues fo...
+2026-05-09 12:11:28 [INFO] mintuu.workflow: Step 0 completed by Research
+2026-05-09 12:11:28 [INFO] mintuu.collaboration: Collaboration DATA_HANDOFF: agent-research → agent-production
+2026-05-09 12:11:28 [INFO] mintuu.agent: Production Agent planning task: Impact Analysis
+2026-05-09 12:11:28 [INFO] mintuu.agent: Using LLM Reasoning Engine for Production...
+2026-05-09 12:11:28 [INFO] mintuu.llm.reasoning: [agent-production] Starting reasoning chain for task: Check affected files and recent commits related to...
+2026-05-09 12:11:50 [INFO] mintuu.workflow: Step 1 completed by Production
+2026-05-09 12:11:50 [INFO] mintuu.collaboration: Collaboration DATA_HANDOFF: agent-production → agent-ceo
+2026-05-09 12:11:50 [INFO] mintuu.agent: CEO Agent planning task: Severity Decision
+2026-05-09 12:11:50 [INFO] mintuu.agent: Using LLM Reasoning Engine for CEO...
+2026-05-09 12:11:50 [INFO] mintuu.llm.reasoning: [agent-ceo] Starting reasoning chain for task: Read Research and Production reports. Decide the s...
+2026-05-09 12:11:52 [INFO] mintuu.workflow: Step 2 completed by CEO
+2026-05-09 12:11:52 [INFO] mintuu.collaboration: Collaboration DATA_HANDOFF: agent-ceo → agent-operations
+2026-05-09 12:11:52 [INFO] mintuu.agent: Operations Agent planning task: Concrete Response Plan
+2026-05-09 12:11:52 [INFO] mintuu.agent: Using LLM Reasoning Engine for Operations...
+2026-05-09 12:11:52 [INFO] mintuu.llm.reasoning: [agent-operations] Starting reasoning chain for task: Build a concrete response plan based on CEO's seve...
+2026-05-09 12:11:54 [INFO] mintuu.workflow: Step 3 completed by Operations
+2026-05-09 12:11:54 [INFO] mintuu.collaboration: Collaboration DATA_HANDOFF: agent-operations → agent-marketing
+2026-05-09 12:11:54 [INFO] mintuu.agent: Marketing Agent planning task: Final Summary & Update
+2026-05-09 12:11:54 [INFO] mintuu.agent: Using LLM Reasoning Engine for Marketing...
+2026-05-09 12:11:54 [INFO] mintuu.llm.reasoning: [agent-marketing] Starting reasoning chain for task: Write a final summary, define labels for the GitHu...
+2026-05-09 12:12:55 [INFO] mintuu.workflow: Step 4 completed by Marketing
+2026-05-09 12:12:55 [INFO] mintuu.api.webhooks: Triggered GitHub Autonomous Pipeline for issue: High memory usage in analytics engine - Run 5
+INFO:     127.0.0.1:50730 - "POST /webhooks/github HTTP/1.1" 200 OK

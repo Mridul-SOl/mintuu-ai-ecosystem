@@ -1,0 +1,20 @@
+# Mintuu AI Ecosystem Kubernetes Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mintuu-orchestrator
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mintuu
+  template:
+    metadata:
+      labels:
+        app: mintuu
+    spec:
+      containers:
+      - name: orchestrator
+        image: mintuu/orchestrator:latest
+        ports:
+        - containerPort: 8000

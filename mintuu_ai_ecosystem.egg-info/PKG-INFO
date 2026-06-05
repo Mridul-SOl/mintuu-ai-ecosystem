@@ -1,0 +1,76 @@
+Metadata-Version: 2.4
+Name: mintuu-ai-ecosystem
+Version: 1.0.0
+Summary: AI-Powered Business Operating System — Multi-Agent Orchestration Platform
+Author: Mintuu AI
+License: MIT
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi>=0.110.0
+Requires-Dist: uvicorn[standard]>=0.27.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: jinja2>=3.1.0
+Requires-Dist: python-multipart>=0.0.6
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: httpx>=0.25.0; extra == "dev"
+Requires-Dist: ruff>=0.2.0; extra == "dev"
+Provides-Extra: production
+Requires-Dist: gunicorn>=21.2.0; extra == "production"
+Requires-Dist: psycopg2-binary>=2.9.0; extra == "production"
+Requires-Dist: redis>=5.0.0; extra == "production"
+
+# Mintuu AI Ecosystem v3
+
+> **The Autonomous AI-Native Business Operating System**
+
+Mintuu is an enterprise-grade orchestration platform that transforms isolated AI agents into a cohesive, autonomous digital workforce. By simulating a real corporate structure, Mintuu coordinates specialized departmental agents (CEO, HR, Marketing, Operations, etc.) using a centralized OS-kernel architecture.
+
+## 🚀 Key Upgrades in v3 (Enterprise Autonomous Release)
+
+1. **Real LLM Reasoning**: Moved from scripted simulations to dynamic Chain-of-Thought (CoT) reasoning utilizing a provider abstraction layer (OpenAI, Anthropic, Ollama, Gemini).
+2. **Semantic Vector Memory (RAG)**: Integrated ChromaDB for contextual organizational knowledge retrieval, allowing agents to learn from past workflows and decisions.
+3. **Event-Driven Distributed Execution**: Migrated from a synchronous loop to an asynchronous event bus, with Redis and Celery handling concurrent background agent workflows.
+4. **Real Tool Execution**: Agents now execute real-world actions through sandboxed tools (PyGithub, Playwright Browser Automation, SMTP Email).
+5. **Autonomous Goal Engine**: Long-running objectives are now decomposed and executed iteratively without human intervention.
+6. **Self-Reflection**: Agents now natively critique their own outputs and support cross-agent reviews (e.g., Marketing strategy reviewed by CEO agent).
+7. **Real-Time WebSocket Dashboard**: UI polling replaced with instant WebSocket streams, rendering a live graph of orchestration and collaboration.
+
+## 🏗️ System Architecture
+
+```
+mintuu_ai_ecosystem/
+├── agents/             # Role-specific agents (CEO, HR, Marketing, etc.) with strict system prompts
+├── api/                # FastAPI Gateway & WebSocket server
+├── automation/         # Scheduled recurring tasks
+├── core/
+│   ├── distributed/    # Celery workers & Redis configuration
+│   ├── events/         # Async Event Bus & webhooks
+│   ├── goals/          # Autonomous long-running goal engine
+│   ├── llm/            # Multi-provider reasoning & context builder
+│   ├── memory/         # ChromaDB Vector RAG & SQLite persistence
+│   ├── orchestration/  # Central OS Kernel, workflow engine, collaboration bus
+│   └── reflection/     # Self-critique and cross-agent evaluation
+├── dashboard/          # Glassmorphism real-time web command center
+└── tools/              # Sandboxed Playwright, GitHub, and System implementations
+```
+
+## 🛠️ Tech Stack
+- **Core**: Python 3.9+, Asyncio, Pydantic
+- **AI/LLMs**: OpenAI, Ollama, ChromaDB, SentenceTransformers
+- **Distributed**: Celery, Redis
+- **Automation**: Playwright, PyGithub
+- **API/UI**: FastAPI, WebSockets, HTML/JS/CSS (Glassmorphism Dark Theme)
+- **Deployment**: Docker Compose
+
+## 📖 Full Documentation
+Please read the [Full Technical Report](./artifacts/FULL_REPORT.md) located in the artifacts directory for an in-depth systems engineering breakdown, architecture diagrams, and system statistics.
+
+## 🏃 How to Run
+```bash
+# 1. Start the distributed infrastructure (Redis, Workers)
+docker-compose up -d
+
+# 2. Run the Main API server
+python3 -m uvicorn api.app:app --host 0.0.0.0 --port 8000
+```

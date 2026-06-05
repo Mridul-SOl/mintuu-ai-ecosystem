@@ -1,0 +1,19 @@
+{
+  "buildCommand": null,
+  "outputDirectory": "dashboard",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://mintuu-backend.onrender.com/api/$1" },
+    { "source": "/auth/(.*)", "destination": "https://mintuu-backend.onrender.com/auth/$1" },
+    { "source": "/ws", "destination": "https://mintuu-backend.onrender.com/ws" },
+    { "source": "/(.*)", "destination": "/templates/$1.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" }
+      ]
+    }
+  ]
+}

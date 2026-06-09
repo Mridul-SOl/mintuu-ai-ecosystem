@@ -55,19 +55,19 @@
 
         <nav class="sidebar-nav">
             <button @click="navigateTo('chat')" class="sidebar-item" :class="{ 'active': currentPage === 'chat' }" id="nav-chat">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                 <span x-show="!sidebarCollapsed">Chat</span>
             </button>
             <button @click="navigateTo('agents')" class="sidebar-item" :class="{ 'active': currentPage === 'agents' }" id="nav-agents">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5" /><circle cx="5" cy="19" r="2.5" /><circle cx="19" cy="19" r="2.5" /><line x1="12" y1="7.5" x2="6.5" y2="16.5" /><line x1="12" y1="7.5" x2="17.5" y2="16.5" /><line x1="7.5" y1="19" x2="16.5" y2="19" /></svg>
                 <span x-show="!sidebarCollapsed">Agents</span>
             </button>
             <button @click="navigateTo('workflows')" class="sidebar-item" :class="{ 'active': currentPage === 'workflows' }" id="nav-workflows">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="6" rx="1" /><rect x="15" y="3" width="6" height="6" rx="1" /><rect x="9" y="15" width="6" height="6" rx="1" /><path d="M6 9v3h6v3M18 9v3h-6" /></svg>
                 <span x-show="!sidebarCollapsed">Workflows</span>
             </button>
             <button @click="navigateTo('history')" class="sidebar-item" :class="{ 'active': currentPage === 'history' }" id="nav-history">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
                 <span x-show="!sidebarCollapsed">History</span>
             </button>
         </nav>
@@ -97,7 +97,7 @@
             
             <div class="topbar-center">
                 <span class="status-dot" :class="systemStatusColor"></span>
-                <span class="live-status-text" x-text="systemStatusText"></span>
+                <span class="live-status-text" :class="{ 'blink-anim': systemStatusColor === 'orange' }" x-text="systemStatusText"></span>
             </div>
 
             <div class="topbar-right">
@@ -106,7 +106,7 @@
                     <span class="badge-count" x-show="notificationCount > 0" x-text="notificationCount"></span>
                 </button>
                 <div class="user-menu" @click.outside="showUserDropdown = false">
-                    <button class="avatar-btn" @click="showUserDropdown = !showUserDropdown" x-text="userInitials" aria-label="User menu"></button>
+                    <button class="avatar-btn" @click="showUserDropdown = !showUserDropdown" x-text="userInitials" :data-tooltip="userName" aria-label="User menu"></button>
                     <div class="dropdown-menu" x-show="showUserDropdown" x-transition style="display: none;">
                         <div class="px-3 py-2 border-b border-white/5 mb-1">
                             <div class="text-sm font-medium text-white" x-text="userName"></div>
@@ -127,23 +127,47 @@
             <div class="absolute inset-0 flex flex-col" :class="{ 'page-fade-leave-active': pageTransition, 'page-fade-enter-active': !pageTransition, 'page-fade-enter': pageTransition }">
                 
                 <!-- ── Chat Page ────────────────────────────────── -->
-                <div x-show="currentPage === 'chat'" class="chat-container">
+                <div x-show="currentPage === 'chat'" x-transition.opacity.duration.150ms class="chat-container">
                     <div class="chat-messages" x-ref="chatMessages">
                         <template x-if="chatMessages.length === 0">
-                            <div class="h-full flex flex-col items-center justify-center text-center max-w-lg mx-auto p-6" x-show="dataLoaded">
-                                <!-- Big Logo SVG for empty state -->
-                                <svg viewBox="0 0 64 64" fill="none" class="w-16 h-16 mb-6 opacity-50">
-                                    <path d="M32 4L56.2487 18V46L32 60L7.75126 46V18L32 4Z" stroke="#7C3AED" stroke-width="2" stroke-linejoin="round"/>
-                                    <circle cx="32" cy="32" r="4" fill="#06B6D4" />
-                                </svg>
-                                <h1 class="text-3xl font-bold mb-2">How can Mintuu help today?</h1>
-                                <p class="text-muted mb-8 text-sm">Assign a goal, describe a problem, or ask for a report. The agent network will organize and execute automatically.</p>
+                            <div class="chat-empty-container" x-show="dataLoaded">
+                                <div class="chat-empty-icon-wrapper">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="url(#chatEmptyGrad)" stroke-width="1.5" class="w-16 h-16 mx-auto mb-6">
+                                        <defs>
+                                            <linearGradient id="chatEmptyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stop-color="#7C3AED" />
+                                                <stop offset="100%" stop-color="#06B6D4" />
+                                            </linearGradient>
+                                        </defs>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.625.625 0 1 1-1.25 0 .625.625 0 0 1 1.25 0Zm4.5 0a.625.625 0 1 1-1.25 0 .625.625 0 0 1 1.25 0Zm4.5 0a.625.625 0 1 1-1.25 0 .625.625 0 0 1 1.25 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48L4.5 21l3.525-1.175c1.179.278 2.422.425 3.975.425Z" />
+                                    </svg>
+                                </div>
+                                <h1 class="chat-empty-title">What would you like Mintuu to handle today?</h1>
+                                <p class="chat-empty-subtitle">Assign a business goal or describe a task. The autonomous agent network will organize and execute automatically.</p>
                                 
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-                                    <button @click="prefillChat('Launch a new product by Q3 with a $50k budget')" class="action-chip justify-center">Launch new product</button>
-                                    <button @click="prefillChat('Run a comprehensive competitor analysis on Anthropic')" class="action-chip justify-center">Analyze competitors</button>
-                                    <button @click="prefillChat('Audit our infrastructure security policies')" class="action-chip justify-center">Security audit</button>
-                                    <button @click="prefillChat('Draft a Q1 financial summary for the board')" class="action-chip justify-center">Financial summary</button>
+                                <div class="suggestion-cards-grid">
+                                    <div @click="prefillChat('Launch a new product by Q3 with a $50k budget')" class="suggestion-card">
+                                        <div class="suggestion-card-header">
+                                            <span class="suggestion-card-badge purple">🚀</span>
+                                            <h4>Launch Product</h4>
+                                        </div>
+                                        <p>Activate CEO, Marketing, and Finance agents to build a launch pipeline.</p>
+                                    </div>
+                                    <div @click="prefillChat('Run a comprehensive competitor analysis on Anthropic')" class="suggestion-card">
+                                        <div class="suggestion-card-header">
+                                            <span class="suggestion-card-badge cyan">🔬</span>
+                                            <h4>Analyze Competitor</h4>
+                                        </div>
+                                        <p>Instruct Research and Marketing agents to audit competitors and pricing models.</p>
+                                    </div>
+                                    <div @click="prefillChat('Audit our infrastructure security policies')" class="suggestion-card">
+                                        <div class="suggestion-card-header">
+                                            <span class="suggestion-card-badge amber">🛡️</span>
+                                            <h4>Security Audit</h4>
+                                        </div>
+                                        <p>Run a full policy audit across server infrastructure and database configs.</p>
+                                    </div>
                                 </div>
                             </div>
                         </template>
@@ -186,22 +210,22 @@
                 </div>
 
                 <!-- ── Agents Page ──────────────────────────────── -->
-                <div x-show="currentPage === 'agents'" class="page overflow-y-auto">
+                <div x-show="currentPage === 'agents'" x-transition.opacity.duration.150ms class="page overflow-y-auto">
                     <div class="page-header">
                         <h2>Agent Network</h2>
-                        <div class="text-sm text-muted bg-white/5 px-3 py-1 rounded-full border border-white/10" x-text="agents.length + ' agents active'"></div>
+                        <div class="agents-live-counter" x-text="agents.length + ' agents • ' + agents.filter(a => a.state === 'busy' || a.state === 'thinking').length + ' active'"></div>
                     </div>
 
                     <template x-if="!dataLoaded"><div class="agents-grid"><template x-for="i in 6"><div class="agent-card-wrapper h-48 skeleton"></div></template></div></template>
                     
                     <div class="agents-grid" x-show="dataLoaded">
                         <template x-for="agent in agents" :key="agent.name">
-                            <div class="agent-card-wrapper" :class="{ 'active': agent.state === 'busy' || agent.state === 'thinking' }" :style="`--agent-color: ${getAgentMeta(agent.department).color}; --agent-glow: ${getAgentMeta(agent.department).color}40;`">
+                            <div class="agent-card-wrapper" :class="{ 'thinking': agent.state === 'thinking', 'busy': agent.state === 'busy', 'active': agent.state === 'busy' || agent.state === 'thinking' }" :style="`--agent-color: ${getAgentMeta(agent.department).color}; --agent-glow: ${getAgentMeta(agent.department).color}40;`">
                                 <div class="agent-card-bg"></div>
                                 <div class="live-badge" x-show="agent.state === 'busy' || agent.state === 'thinking'">Live</div>
                                 <div class="agent-card-content">
                                     <div class="flex justify-between items-start">
-                                        <div class="agent-icon" x-text="getAgentMeta(agent.department).icon"></div>
+                                        <div class="agent-icon" x-html="getAgentMeta(agent.department).icon"></div>
                                         <div class="agent-status-badge" :class="agent.state === 'busy' ? 'executing' : (agent.state === 'thinking' ? 'thinking' : 'idle')">
                                             <span x-show="agent.state === 'busy'" class="spin-icon">⟳</span>
                                             <span x-text="agent.state === 'busy' ? 'Executing' : (agent.state === 'thinking' ? 'Thinking' : 'Idle')"></span>
@@ -219,6 +243,7 @@
                                         <div class="agent-progress-bar">
                                             <div class="agent-progress-fill" :style="`width: ${Math.min(100, (agent.tasks_completed / 10) * 100)}%`"></div>
                                         </div>
+                                        <div class="agent-last-active" x-text="agent.state && agent.state.last_active ? 'Last active: ' + formatTimeAgo(agent.state.last_active) : (agent.state === 'busy' || agent.state === 'thinking' ? 'Active now' : 'Last active: just now')"></div>
                                     </div>
                                 </div>
                             </div>
@@ -245,7 +270,7 @@
                 </div>
 
                 <!-- ── Workflows Page ───────────────────────────── -->
-                <div x-show="currentPage === 'workflows'" class="page overflow-y-auto">
+                <div x-show="currentPage === 'workflows'" x-transition.opacity.duration.150ms class="page overflow-y-auto">
                     <div class="page-header">
                         <h2>Active Workflows</h2>
                         <button class="btn primary btn-sm" @click="fetchState()">Refresh</button>
@@ -262,34 +287,43 @@
                     </template>
 
                     <div class="space-y-6">
-                        <template x-for="wf in workflows" :key="wf.id">
+                        <template x-for="wf in workflows" :key="wf.workflow_id">
                             <div class="workflow-graph-container">
                                 <div class="workflow-header">
-                                    <div class="font-mono text-xs text-muted mb-1" x-text="wf.id"></div>
+                                    <div class="font-mono text-xs text-muted mb-1" x-text="wf.workflow_id"></div>
                                     <div class="workflow-title" x-text="wf.name"></div>
-                                    <div class="workflow-status-badge" :class="wf.status === 'completed' ? 'bg-purple-900/50 text-purple-400' : 'bg-cyan-900/50 text-cyan-400'" x-text="wf.status"></div>
+                                    <div class="workflow-status-badge" :class="wf.status === 'COMPLETED' || wf.status === 'completed' ? 'bg-purple-900/50 text-purple-400' : 'bg-cyan-900/50 text-cyan-400'" x-text="wf.status"></div>
                                 </div>
                                 
                                 <div class="node-graph">
-                                    <template x-for="(step, idx) in wf.steps" :key="step.id">
+                                    <template x-for="(step, idx) in wf.steps" :key="idx">
                                         <div class="flex items-center">
                                             <div class="graph-node">
-                                                <div class="node-box" :class="{ 'completed': step.status === 'completed', 'active': step.status === 'in_progress', 'failed': step.status === 'failed' }">
+                                                <div class="node-box" :class="{ 'completed': step.status === 'COMPLETED' || step.status === 'completed', 'active': step.status === 'RUNNING' || step.status === 'in_progress', 'failed': step.status === 'FAILED' || step.status === 'failed' }">
                                                     <div class="node-step-circle" x-text="idx + 1"></div>
-                                                    <div class="node-agent" x-text="step.assigned_agent"></div>
+                                                    <div class="node-agent" x-text="step.agent_type"></div>
                                                     <div class="text-[9px] text-muted uppercase tracking-wider" x-text="step.status"></div>
                                                 </div>
                                             </div>
-                                            <div class="graph-edge" x-show="idx < wf.steps.length - 1" :class="{ 'completed': step.status === 'completed', 'active': step.status === 'in_progress' }">
+                                            <div class="graph-edge" x-show="idx < wf.steps.length - 1" :class="{ 'completed': step.status === 'COMPLETED' || step.status === 'completed', 'active': step.status === 'RUNNING' || step.status === 'in_progress' }">
                                                 <div class="graph-edge-fill"></div>
                                             </div>
                                         </div>
                                     </template>
                                 </div>
                                 
-                                <div class="execution-timeline">
-                                    <template x-for="step in wf.steps">
-                                        <div class="timeline-segment" :style="`width: ${100/wf.steps.length}%; background: ${step.status === 'completed' ? 'var(--color-purple)' : (step.status === 'in_progress' ? 'var(--color-cyan)' : 'transparent')}`"></div>
+                                <div class="execution-timeline-wrapper">
+                                    <div class="flex justify-between items-center text-xs text-muted mb-2">
+                                        <span x-text="`${wf.steps.filter(s => s.status === 'COMPLETED' || s.status === 'completed').length} / ${wf.steps.length} Steps Completed`"></span>
+                                        <span class="font-mono" x-text="`${Math.round((wf.steps.filter(s => s.status === 'COMPLETED' || s.status === 'completed').length / wf.steps.length) * 100)}%`"></span>
+                                    </div>
+                                    <div class="execution-timeline">
+                                        <template x-for="step in wf.steps">
+                                            <div class="timeline-segment" :style="`width: ${100/wf.steps.length}%; background: ${step.status === 'COMPLETED' || step.status === 'completed' ? 'var(--color-purple)' : (step.status === 'RUNNING' || step.status === 'in_progress' ? 'var(--color-cyan)' : 'transparent')}`"></div>
+                                        </template>
+                                    </div>
+                                    <template x-if="wf.collaboration_log && wf.collaboration_log.length > 0">
+                                        <div class="wf-collab-pill">🤝 <span x-text="wf.collaboration_log.length + ' collaborations'"></span></div>
                                     </template>
                                 </div>
                             </div>
@@ -297,44 +331,95 @@
                     </div>
 
                     <h3 class="text-lg font-bold mt-12 mb-6">Autonomous Background Tasks</h3>
-                    <div class="bg-surface border border-white/10 rounded-lg p-1">
-                        <template x-for="task in autoTasks" :key="task.name">
-                            <div class="flex items-center justify-between p-4 hover:bg-white/5 border-b border-white/5 last:border-0">
-                                <div>
-                                    <div class="font-medium flex items-center gap-2">
-                                        <span class="w-2 h-2 rounded-full" :class="task.active ? 'bg-cyan-400' : 'bg-muted'"></span>
-                                        <span x-text="task.name"></span>
+                    <div class="autonomous-cards-grid">
+                        <template x-for="task in autoTasks" :key="task.id || task.name">
+                            <div class="auto-task-card" :class="{ 'active': task.is_active }">
+                                <div class="auto-task-card-header">
+                                    <div class="flex items-center gap-2">
+                                        <span class="auto-pulse-dot" :class="task.is_active ? 'bg-cyan-400' : 'bg-muted'"></span>
+                                        <h4 class="font-semibold text-sm" x-text="task.name"></h4>
                                     </div>
-                                    <div class="text-xs text-muted mt-1" x-text="task.agent + ' • Every ' + task.schedule_seconds + 's'"></div>
+                                    <span class="interval-badge" x-text="formatInterval(task.interval_seconds)"></span>
                                 </div>
-                                <div class="font-mono text-xs text-muted" x-text="task.runs + ' runs'"></div>
+                                <p class="text-xs text-muted mt-2" x-text="task.description"></p>
+                                <div class="auto-task-card-footer mt-4">
+                                    <div class="text-xs text-muted">Agent: <span class="font-mono text-cyan-400" x-text="task.agent_type"></span></div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <div class="text-xs text-muted">Runs: <span class="font-mono text-white" x-text="task.run_count"></span></div>
+                                        <button class="trigger-btn" @click.stop="triggerTask(task.id || task.name)">Trigger now</button>
+                                    </div>
+                                </div>
                             </div>
                         </template>
                     </div>
                 </div>
 
                 <!-- ── History Page ───────────────────────────── -->
-                <div x-show="currentPage === 'history'" class="page overflow-y-auto">
+                <div x-show="currentPage === 'history'" x-transition.opacity.duration.150ms class="page overflow-y-auto">
                     <div class="page-header"><h2>History</h2></div>
                     <div class="mb-6">
-                        <input type="text" x-model="historySearch" placeholder="Search past workflows..." class="input w-full max-w-md">
+                        <input type="text" x-model="historySearch" placeholder="Search past workflows..." class="history-search-input">
                     </div>
-                    <div class="bg-surface rounded-lg border border-white/10 overflow-hidden">
+                    
+                    <template x-if="!dataLoaded">
+                        <div class="space-y-4">
+                            <div class="h-24 rounded-lg skeleton"></div>
+                            <div class="h-24 rounded-lg skeleton"></div>
+                            <div class="h-24 rounded-lg skeleton"></div>
+                        </div>
+                    </template>
+
+                    <div class="history-cards-grid" x-show="dataLoaded">
                         <template x-if="filteredHistory.length === 0"><div class="p-8 text-center text-muted">No history found.</div></template>
-                        <template x-for="h in filteredHistory" :key="h.id">
-                            <div class="flex items-center justify-between p-4 border-b border-white/5 hover:bg-white/5 cursor-pointer transition">
-                                <div>
-                                    <div class="font-medium" x-text="h.name"></div>
-                                    <div class="text-xs text-muted mt-1 font-mono" x-text="h.id + ' • ' + formatDate(h.created_at)"></div>
+                        <template x-for="h in filteredHistory" :key="h.workflow_id">
+                            <div class="history-card" :class="{ 'expanded': expandedHistoryId === h.workflow_id }" @click="expandedHistoryId = (expandedHistoryId === h.workflow_id ? null : h.workflow_id)">
+                                <div class="history-card-header">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <h4 class="font-semibold text-base text-white" x-text="h.name"></h4>
+                                            <span class="type-badge" x-text="getWorkflowType(h)"></span>
+                                        </div>
+                                        <div class="flex gap-4 text-xs text-muted mt-2 flex-wrap">
+                                            <span x-text="formatDate(h.created_at)"></span>
+                                            <span x-text="`Duration: ${getWorkflowDuration(h)}`"></span>
+                                            <span x-text="`${getAgentCount(h)} agents active`"></span>
+                                        </div>
+                                    </div>
+                                    <div class="history-card-status flex items-center gap-2">
+                                        <span class="status-badge-text text-sm font-semibold uppercase text-purple-400" x-text="h.status"></span>
+                                        <svg class="w-4 h-4 text-muted transition-transform duration-200" :class="{ 'rotate-180': expandedHistoryId === h.workflow_id }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
                                 </div>
-                                <div class="text-sm font-medium text-purple-400">Completed</div>
+                                
+                                <!-- Step-by-step trace expansion -->
+                                <div class="history-card-details mt-4 pt-4 border-t border-white/5" x-show="expandedHistoryId === h.workflow_id" @click.stop x-transition>
+                                    <h5 class="text-xs font-semibold uppercase tracking-wider text-muted mb-4">Step Execution Trace</h5>
+                                    <div class="space-y-4">
+                                        <template x-for="(step, sIdx) in h.steps" :key="sIdx">
+                                            <div class="flex items-start gap-3 text-sm">
+                                                <span class="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-xs font-mono text-cyan-400 border border-white/10" x-text="sIdx + 1"></span>
+                                                <div class="flex-1">
+                                                    <div class="flex justify-between items-center gap-2">
+                                                        <span class="font-medium text-white" x-text="step.task_title"></span>
+                                                        <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded" :class="step.status === 'COMPLETED' || step.status === 'completed' ? 'bg-purple-900/30 text-purple-400' : 'bg-red-900/30 text-red-400'" x-text="step.status"></span>
+                                                    </div>
+                                                    <p class="text-xs text-muted mt-1" x-text="step.task_description"></p>
+                                                    <div class="flex justify-between text-[10px] text-muted mt-2">
+                                                        <span>Agent: <strong class="text-cyan-400" x-text="step.agent_type"></strong></span>
+                                                        <span x-text="step.duration_ms ? `${(step.duration_ms / 1000).toFixed(1)}s` : 'N/A'"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
                             </div>
                         </template>
                     </div>
                 </div>
 
                 <!-- ── Settings Page ──────────────────────────── -->
-                <div x-show="currentPage === 'settings'" class="page overflow-y-auto">
+                <div x-show="currentPage === 'settings'" x-transition.opacity.duration.150ms class="page overflow-y-auto">
                     <div class="page-header"><h2>Settings</h2></div>
                     <div class="max-w-2xl space-y-8">
                         <div class="card p-6">
@@ -358,32 +443,61 @@
                                 <button class="btn secondary text-red-400 hover:bg-red-900/20 hover:border-red-500/50" @click="clearData()">Clear All Data</button>
                             </div>
                         </div>
+                        <div class="system-info-card">
+                            <h3>System Information</h3>
+                            <div class="system-info-grid">
+                                <div class="system-info-item">
+                                    <span class="system-info-label">Backend Version</span>
+                                    <span class="system-info-value" x-text="systemInfo.version || '3.0.0'"></span>
+                                </div>
+                                <div class="system-info-item">
+                                    <span class="system-info-label">LLM Provider</span>
+                                    <span class="system-info-value" x-text="systemInfo.llm_provider || 'Ollama (local)'"></span>
+                                </div>
+                                <div class="system-info-item">
+                                    <span class="system-info-label">Agents Active</span>
+                                    <span class="system-info-value" x-text="systemInfo.agents_active || agents.length"></span>
+                                </div>
+                                <div class="system-info-item">
+                                    <span class="system-info-label">Memory Entries</span>
+                                    <span class="system-info-value" x-text="systemInfo.memory_entries || '0'"></span>
+                                </div>
+                                <div class="system-info-item">
+                                    <span class="system-info-label">Total Workflows Run</span>
+                                    <span class="system-info-value" x-text="systemInfo.total_workflows || workflows.length"></span>
+                                </div>
+                                <div class="system-info-item">
+                                    <span class="system-info-label">System Uptime</span>
+                                    <span class="system-info-value" x-text="uptimeText"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
             </div>
         </div>
-
-        <!-- ── Mobile Bottom Nav ──────────────────────────────── -->
-        <nav class="mobile-nav hidden">
-            <button class="mobile-nav-item" :class="{ 'active': currentPage === 'chat' }" @click="navigateTo('chat')">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                <span>Chat</span>
-            </button>
-            <button class="mobile-nav-item" :class="{ 'active': currentPage === 'agents' }" @click="navigateTo('agents')">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                <span>Agents</span>
-            </button>
-            <button class="mobile-nav-item" :class="{ 'active': currentPage === 'workflows' }" @click="navigateTo('workflows')">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                <span>Flows</span>
-            </button>
-            <button class="mobile-nav-item" :class="{ 'active': currentPage === 'settings' }" @click="navigateTo('settings')">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span>Settings</span>
-            </button>
-        </nav>
     </main>
+
+    <!-- ── Mobile Bottom Nav (Moved to root for fixed positioning) ──────────────────────────────── -->
+    <nav class="mobile-nav hidden">
+        <button class="mobile-nav-item" :class="{ 'active': currentPage === 'chat' }" @click="navigateTo('chat')">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+            <span>Chat</span>
+        </button>
+        <button class="mobile-nav-item" :class="{ 'active': currentPage === 'agents' }" @click="navigateTo('agents')">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span>Agents</span>
+        </button>
+        <button class="mobile-nav-item" :class="{ 'active': currentPage === 'workflows' }" @click="navigateTo('workflows')">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <span>Flows</span>
+        </button>
+        <button class="mobile-nav-item" :class="{ 'active': currentPage === 'settings' }" @click="navigateTo('settings')">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span>Settings</span>
+        </button>
+    </nav>
 
     <!-- ── Welcome Overlay ────────────────────────────────────── -->
     <div x-show="showWelcome" class="fixed inset-0 z-[1000] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-500" style="display: none;">
@@ -426,6 +540,15 @@
 
     <!-- Toast Container -->
     <div id="toast-container" class="toast-container"></div>
+
+    <!-- Premium 3% Noise Overlay SVG Filter -->
+    <svg style="display: none;">
+        <filter id="noiseFilter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.03 0"/>
+        </filter>
+    </svg>
+    <div class="noise-overlay"></div>
 
     <script src="/static/js/auth.js"></script>
     <script src="/static/js/app.js"></script>

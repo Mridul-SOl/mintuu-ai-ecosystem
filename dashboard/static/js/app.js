@@ -44,8 +44,10 @@ function mintuu() {
         historySearch: '',
         historyData: [],
         selectedHistory: null,
+        expandedHistoryId: null,
         uptimeStart: Date.now(),
         uptimeText: '0m',
+        systemInfo: {},
 
         // ── Rotating Placeholder ─────────────────
         placeholders: [
@@ -71,19 +73,19 @@ function mintuu() {
 
         // ── Agent icon/color map ─────────────────
         agentMeta: {
-            'CEO Dept':           { icon: '👑', color: '#7C3AED', label: 'Strategy' },
-            'Research Dept':      { icon: '🔬', color: '#06B6D4', label: 'Research' },
-            'Marketing Dept':     { icon: '📣', color: '#EC4899', label: 'Growth' },
-            'Finance Dept':       { icon: '📊', color: '#10B981', label: 'Finance' },
-            'Operations Dept':    { icon: '⚙️', color: '#F59E0B', label: 'Ops' },
-            'Production Dept':    { icon: '🏭', color: '#8B5CF6', label: 'Build' },
-            'HR Dept':            { icon: '🧑‍💼', color: '#14B8A6', label: 'People' },
-            'Security Dept':      { icon: '🛡️', color: '#EF4444', label: 'Security' },
-            'Infrastructure Dept':{ icon: '🌐', color: '#3B82F6', label: 'Infra' },
+            'CEO Dept':           { icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M3 20h18v1H3z"/></svg>`, color: '#7C3AED', label: 'Strategy' },
+            'Research Dept':      { icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M16 16l5 5"/><circle cx="11" cy="11" r="1.5" fill="#06B6D4"/><path d="M8 11h6M11 8v6"/></svg>`, color: '#06B6D4', label: 'Research' },
+            'Marketing Dept':     { icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#EC4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`, color: '#EC4899', label: 'Growth' },
+            'Finance Dept':       { icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`, color: '#10B981', label: 'Finance' },
+            'Operations Dept':    { icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`, color: '#F59E0B', label: 'Ops' },
+            'Production Dept':    { icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="12" y1="2" x2="12" y2="22"/><polyline points="9 5 12 2 15 5"/></svg>`, color: '#3B82F6', label: 'Build' },
+            'HR Dept':            { icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#14B8A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`, color: '#14B8A6', label: 'People' },
+            'Security Dept':      { icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><rect x="10" y="11" width="4" height="3" rx="1"/><path d="M11 11V9a1 1 0 0 1 2 0v2"/></svg>`, color: '#EF4444', label: 'Security' },
+            'Infrastructure Dept':{ icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="6" rx="2"/><rect x="2" y="10" width="20" height="6" rx="2"/><rect x="2" y="18" width="20" height="6" rx="2"/><line x1="6" y1="5" x2="6" y2="5"/><line x1="6" y1="13" x2="6" y2="13"/><line x1="6" y1="21" x2="6" y2="21"/></svg>`, color: '#F97316', label: 'Infra' },
         },
 
         getAgentMeta(agentType) {
-            return this.agentMeta[agentType] || { icon: '🤖', color: '#7C3AED', label: agentType };
+            return this.agentMeta[agentType] || { icon: `<svg viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>`, color: '#7C3AED', label: agentType };
         },
 
         // ── Page titles for breadcrumb ───────────
@@ -122,7 +124,7 @@ function mintuu() {
             setInterval(() => {
                 this.currentPlaceholder = (this.currentPlaceholder + 1) % this.placeholders.length;
                 this.placeholderText = this.placeholders[this.currentPlaceholder];
-            }, 4000);
+            }, 3000);
 
             // Uptime timer
             setInterval(() => { this.uptimeText = this.formatUptime(); }, 30000);
@@ -193,7 +195,7 @@ function mintuu() {
             this.chatMessages.push({ type: 'user', text: this.escapeHtml(msg) });
             this.chatMessages.push({ type: 'system', text: '<div class="typing-indicator"><span></span><span></span><span></span></div>' });
             this.systemStatusText = 'Agent reasoning...';
-            this.systemStatusColor = 'purple';
+            this.systemStatusColor = 'orange';
             this.systemStatusLabel = 'Thinking';
             this.$nextTick(() => { const el = this.$refs.chatMessages; if (el) el.scrollTop = el.scrollHeight; });
 
@@ -244,6 +246,18 @@ function mintuu() {
                 }
                 if (collab) this.collabMessages = (collab.message_history || []).slice(-30).reverse();
                 if (auto) { this.autoTasks = auto.tasks || []; this.autoRunning = auto.is_running; }
+                
+                // Populate system info for settings
+                const eco = status.ecosystem || {};
+                const sys = status.system_state || {};
+                this.systemInfo = {
+                    version: eco.version || '3.0.0',
+                    llm_provider: eco.llm_provider || 'Ollama (local)',
+                    agents_active: (status.agents || []).length,
+                    memory_entries: sys.total_memory_entries || eco.memory_entries || '0',
+                    total_workflows: (sys.total_workflows_completed || 0) + (active.length || 0),
+                };
+                
                 this.dataLoaded = true;
             } catch {}
         },
@@ -328,6 +342,54 @@ function mintuu() {
             if (mins < 60) return mins + 'm';
             const hrs = Math.floor(mins / 60);
             return hrs + 'h ' + (mins % 60) + 'm';
+        },
+        getWorkflowType(wf) {
+            const name = (wf.name || '').toLowerCase();
+            if (name.includes('github') || name.includes('incident') || name.includes('issue')) return 'GitHub Incident';
+            if (name.includes('launch') || name.includes('product') || name.includes('strategic')) return 'Strategic Launch';
+            if (name.includes('competitor') || name.includes('analysis')) return 'Competitor Watch';
+            if (name.includes('security') || name.includes('audit') || name.includes('infrastructure')) return 'Security Audit';
+            if (name.includes('budget') || name.includes('finance') || name.includes('burn')) return 'Budget Review';
+            if (name.includes('health') || name.includes('check') || name.includes('system')) return 'Health Check';
+            return 'General Task';
+        },
+        getWorkflowDuration(wf) {
+            if (!wf.started_at || !wf.completed_at) return 'N/A';
+            const start = new Date(wf.started_at);
+            const end = new Date(wf.completed_at);
+            const diff = Math.max(0, end - start);
+            const secs = Math.round(diff / 1000);
+            if (secs < 60) return secs + 's';
+            return Math.round(secs / 60) + 'm';
+        },
+        getAgentCount(wf) {
+            if (!wf.steps) return 0;
+            const agents = new Set(wf.steps.map(s => s.agent_type));
+            return agents.size;
+        },
+
+        // ── Time Ago Helper ──────────────────────
+        formatTimeAgo(iso) {
+            try {
+                const d = new Date(iso);
+                const diff = (Date.now() - d.getTime()) / 1000;
+                if (diff < 10) return 'just now';
+                if (diff < 60) return `${Math.round(diff)}s ago`;
+                if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+                if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+                return `${Math.floor(diff/86400)}d ago`;
+            } catch { return 'just now'; }
+        },
+
+        // ── Trigger Autonomous Task ───────────────
+        async triggerTask(taskId) {
+            try {
+                await authFetch(`${API_BASE}/api/v1/autonomous/${taskId}/trigger`, { method: 'POST' });
+                this.showToast('success', 'Task Triggered', `Autonomous task ${taskId} triggered.`);
+                this.fetchState();
+            } catch (e) {
+                this.showToast('error', 'Trigger Failed', e.message || 'Could not trigger task.');
+            }
         },
     };
 }
